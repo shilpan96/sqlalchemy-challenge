@@ -43,7 +43,7 @@ def welcome():
         f"<strong>1- </strong>/api/v1.0/precipitation<br/>"
         f"<strong>2- </strong>/api/v1.0/stations<br/>"
         f"<strong>3- </strong>/api/v1.0/tobs<br/>"
-        f"<strong>4- </strong>/api/v1.0/<start>/<end>"
+        f"<strong>4- </strong>/api/v1.0/min_max_avg/start/end"
 
     )
 
@@ -90,15 +90,17 @@ def tobs():
 @app.route("/api/v1.0/min_max_avg/<start>")
 def start(start):
     # create session link
+    #print("Hello World")
     session = Session(engine)
+    
 
     """Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start date."""
 
     # take any date and convert to yyyy-mm-dd format for the query
-    start_dt = dt.datetime.strptime(start, '%Y-%m-%D')
+    start_dt = dt.datetime.strptime(start, '%Y-%m-%d')
 
     # query data for the start date value
-    results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start_dt).all()
+    results=session.query(func.min(Measurement.tobs),func.avg(Measurement.tobs),func.max(Measurement.tobs)).filter(Measurement.date >= start_dt).all()
 
     session.close()
 
@@ -144,8 +146,6 @@ def start_end(start, end):
 
     # jsonify the result
     return jsonify(t_list)
-
-
 
 
 if __name__ == '__main__':
